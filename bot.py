@@ -61,7 +61,7 @@ def check_user(message):
                              f"{message.from_user.first_name}, на тебя уже создана заявка. В целях безопасности мы можем держать открытой только одну. Проверь статус заявки"
                              f"", reply_markup=keyboard).id
     # регистрируем следующий шаг
-    bot.register_next_step_handler(message, get_card)
+    bot.register_next_step_handler(message, expect_bot)
 
 def get_card(message):
     global user_card_number
@@ -120,7 +120,15 @@ def get_summ(message):
             bot.send_message(message.from_user.id,
                              f"Заявка на обмен создана. Ожидайте уведомления.",
                              reply_markup=keyboard)
-            # bot.register_next_step_handler(message)
+            bot.register_next_step_handler(message,expect_bot)
+
+
+def expect_bot(message):
+    bot.send_message(message.from_user.id,
+                     f"Заявка на обмен создана. Ожидайте уведомления.")
+    bot.register_next_step_handler(message, expect_bot)
+
+
 
 
 def check_order_status(message):
