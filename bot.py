@@ -109,9 +109,9 @@ def get_summ(message):
                 lr = db.lastrowid
                 date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
                 create_push_sql = f"INSERT INTO request_money_log (`order`,`last`,`date`) VALUES ('{lr}','1','{date}')"
-                print(create_push_sql)
-
+                create_expect_sql = f"INSERT INTO request_expect_log (`order`,`flag_to_client`,`flag_from_client`,`date`) VALUES ('{lr}','0','0','{date}')"
                 db.execute(create_push_sql)
+                db.execute(create_expect_sql)
                 DB.commit()
             DB.close()
             keyboard = types.InlineKeyboardMarkup()
@@ -124,8 +124,8 @@ def get_summ(message):
 
 
 def expect_bot(message):
-    bot.send_message(message.from_user.id,
-                     f"Заявка на обмен создана. Ожидайте уведомления.")
+    # bot.send_message(message.from_user.id,
+    #                  f"Заявка на обмен создана. Ожидайте уведомления.")
     bot.register_next_step_handler(message, expect_bot)
 
 
@@ -163,7 +163,8 @@ def start(call):
         bot.send_message(call.message.chat.id, f'Курс по данной паре равен {course}. Создать заявку на обмен?',
                          reply_markup=keyboard)
     if 'create_order' in call.data:
-        bot.send_message(call.message.chat.id, f'Уточните номер карты. Используйте только цифры.')
+        bot.send_message(call.message.chat.id, f'Уточните номер карты. Используйте только цифры1.')
+        bot.register_next_step_handler(call.message, get_card)
 
 
     # если нажата кнопка проверки заявки
